@@ -14,14 +14,17 @@ public record ProjectRequest(
         @NotNull
         UUID proprietaireId,
         @NotBlank
+        String nom,
+        @NotBlank
         String description,
         @NotNull
         Status statut,
-        @NotBlank
+        @NotNull
         LocalDateTime dateDebut
 ) {
     public static Project from (ProjectRequest projectRequest) {
         return Project.builder()
+                .nom(projectRequest.nom())
                 .description(projectRequest.description())
                 .statut(projectRequest.statut())
                 .dateDebut(projectRequest.dateDebut())

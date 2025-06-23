@@ -25,7 +25,7 @@ public class Project extends BaseEntity {
     private String description;
 
     @ManyToOne
-    @JoinColumn(name = "proprietaireId", nullable = false)
+    @JoinColumn(name = "proprietaire_Id", nullable = false)
     private User proprietaireId;
 
     @Builder.Default
