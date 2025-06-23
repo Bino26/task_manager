@@ -9,6 +9,7 @@ import com.taskmanager.taskmanager.enums.PriorityLevel;
 import com.taskmanager.taskmanager.enums.Status;
 import com.taskmanager.taskmanager.event.TaskDeletedEvent;
 import com.taskmanager.taskmanager.exception.custom.CustomNotFoundException;
+import com.taskmanager.taskmanager.exception.custom.OverdueTaskNotFoundException;
 import com.taskmanager.taskmanager.repository.ProjectRepository;
 import com.taskmanager.taskmanager.repository.TaskRepository;
 import com.taskmanager.taskmanager.repository.UserRepository;
@@ -189,8 +190,17 @@ public class TaskService {
     @Cacheable(value = "tasks", key = "'overdue'")
     public Page<TaskResponse> listOverdueTasks(Pageable pageable) {
         log.info("Fetching overdue tasks");
-        return taskRepository.findOverdueTasks(pageable)
+
+        Page<TaskResponse> tasks = taskRepository.findOverdueTasks(pageable)
                 .map(TaskResponse::from);
+
+        if (tasks.isEmpty()) {
+            log.warn("No overdue tasks found.");
+            throw new OverdueTaskNotFoundException("No overdue tasks found.");
+        }
+
+        return tasks;
     }
+
 
 }
