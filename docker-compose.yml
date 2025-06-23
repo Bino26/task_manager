@@ -10,6 +10,12 @@ services:
         - ALLOW_EMPTY_PASSWORD=yes
       networks:
         - shared-network
+      healthcheck:
+        test: [ "CMD", "redis-cli", "ping" ]
+        interval: 30s
+        timeout: 10s
+        retries: 3
+
 
     postgres:
       image: postgres:latest
@@ -19,25 +25,36 @@ services:
         - "5432:5432"
       environment:
         POSTGRES_USER: postgres
-        POSTGRES_PASSWORD: postgres
-        POSTGRES_DB: task_managerDB
+        POSTGRES_PASSWORD: root
+        POSTGRES_DB: taskmanager
       networks:
         - shared-network
+      healthcheck:
+        test: [ "CMD-SHELL", "pg_isready -U taskmanager -d taskmanager_demo" ]
+        interval: 30s
+        timeout: 10s
+        retries: 3
 
     app:
       build: .
       ports:
         - "8080:8080"
       environment:
-        - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/task_managerDB
+        - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/taskmanager
         - SPRING_DATASOURCE_USERNAME=postgres
-        - SPRING_DATASOURCE_PASSWORD=postgres
+        - SPRING_DATASOURCE_PASSWORD=root
         - SPRING_PROFILES_ACTIVE=docker
       depends_on:
         - postgres
       networks:
         - shared-network
       restart: "no"
+      healthcheck:
+        test: [ "CMD", "curl", "-f", "http://localhost:8080/api/actuator/health" ]
+        interval: 30s
+        timeout: 10s
+        retries: 3
+        start_period: 60s
 
 networks:
   shared-network:
