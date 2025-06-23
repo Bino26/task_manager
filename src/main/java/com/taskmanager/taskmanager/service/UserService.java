@@ -120,7 +120,7 @@ public class UserService {
         logger.info("User deleted with id: {}", id);
     }
 
-    protected User findById(UUID id) {
+    public User findById(UUID id) {
         logger.debug("Finding user by id: {}", id);
         return userRepository.findByIdAndDeletedAtNull(id).orElseThrow(
                 () -> {
@@ -129,7 +129,7 @@ public class UserService {
                 });
     }
 
-    protected User findByEmail(String email) {
+    public User findByEmail(String email) {
         logger.debug("Finding user by email: {}", email);
         return userRepository.findByEmailAndDeletedAtNull(email).orElseThrow(
                 () -> {
@@ -138,12 +138,12 @@ public class UserService {
                 });
     }
 
-    protected User getAuthenticatedUser() {
+    public User getAuthenticatedUser() {
         String email =  SecurityContextHolder.getContext().getAuthentication().getName();
         return findByEmail(email);
     }
 
-    protected void existsByEmail(String email) {
+    public void existsByEmail(String email) {
         logger.debug("Checking if user exists with email: {}", email);
         if (userRepository.existsByEmailAndDeletedAtNull(email)) {
             logger.error("User already exists with email: {}", email);

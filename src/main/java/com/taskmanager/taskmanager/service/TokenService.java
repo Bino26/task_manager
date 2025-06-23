@@ -32,11 +32,11 @@ public class TokenService {
     private static final Logger logger = LoggerFactory.getLogger(TokenService.class);
 
     @Value("${jwt.secret-key}")
-    String token;
+    public String token;
     @Value("${jwt.access-expiration-time}")
-    Integer accessExpiration;
+    public Integer accessExpiration;
     @Value("${jwt.refresh-expiration-time}")
-    Integer refreshExpiration;
+    public Integer refreshExpiration;
 
     private final RefreshTokenRepository refreshTokenRepository;
 
@@ -119,7 +119,7 @@ public class TokenService {
         }
     }
 
-    protected void deleteRefreshToken(String refreshToken) {
+    public void deleteRefreshToken(String refreshToken) {
         logger.info("Deleting refresh token: {}", refreshToken);
         RefreshToken token = getRefreshToken(refreshToken);
         token.softDelete();
@@ -146,7 +146,7 @@ public class TokenService {
                 .compact();
     }
 
-    protected Key getKey() {
+    public Key getKey() {
         logger.debug("Getting key for JWT signing");
         byte[] keyBytes = Decoders.BASE64.decode(token);
         return Keys.hmacShaKeyFor(keyBytes);
