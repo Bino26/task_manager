@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Range;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.UUID;
 
@@ -26,6 +27,10 @@ public interface TaskRepository extends JpaRepository<Task, UUID> {
     Page<Task> findByAssigneId_IdAndPrioritéAndDeletedAtNull(UUID assigneId, PriorityLevel priorité, Pageable pageable);
 
     Page<Task> findByStatutAndPrioritéAndDeletedAtNull(Status statut, PriorityLevel priorité, Pageable pageable);
+
+    @Query("SELECT t FROM Task t WHERE t.deletedAt IS NULL AND t.dateEcheance < CURRENT_TIMESTAMP AND t.statut <> 'COMPLETED'")
+    Page<Task> findOverdueTasks(Pageable pageable);
+
 
 
 }

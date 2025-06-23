@@ -112,4 +112,16 @@ public class TaskController {
         taskService.deleteTask(id);
         return ResponseEntity.noContent().build();
     }
+
+    @Operation(
+            method = "GET",
+            summary = "List overdue tasks",
+            description = "Return all tasks that are overdue (deadline passed and not completed)"
+    )
+    @PreAuthorize("hasAuthority('PROJECT_MANAGER')")
+    @GetMapping("/en-retard")
+    public ResponseEntity<Page<TaskResponse>> listOverdueTasks(Pageable pageable) {
+        return ResponseEntity.ok(taskService.listOverdueTasks(pageable));
+    }
+
 }

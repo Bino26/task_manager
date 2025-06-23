@@ -185,4 +185,12 @@ public class TaskService {
                     return new CustomNotFoundException("Task not found with id: " + id);
                 });
     }
+
+    @Cacheable(value = "tasks", key = "'overdue'")
+    public Page<TaskResponse> listOverdueTasks(Pageable pageable) {
+        log.info("Fetching overdue tasks");
+        return taskRepository.findOverdueTasks(pageable)
+                .map(TaskResponse::from);
+    }
+
 }
