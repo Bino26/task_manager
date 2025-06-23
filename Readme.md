@@ -30,5 +30,15 @@ $ docker-compose up
 ``` 
 
 - **You can reach the swagger-ui via**  `http://localhost:8080/swagger-ui/index.html`
+```sh
+  Login with :
+'admin@task.com' and 'password1234' 
+  for being able to access all endpoints
+```
 
 ### Contribute
+Feel free to open a Pull Request or an issue !
+
+### ⚠️ Warning
+Due to a missed deadline, **the Postman collection may be missing** or **incomplete**.
+Please use Swagger  to interact with the API.
