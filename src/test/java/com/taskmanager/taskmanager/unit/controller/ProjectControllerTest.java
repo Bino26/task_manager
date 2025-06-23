@@ -1,6 +1,11 @@
 package com.taskmanager.taskmanager.unit.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.taskmanager.taskmanager.controller.ProjectController;
+import com.taskmanager.taskmanager.dto.request.ProjectRequest;
+import com.taskmanager.taskmanager.dto.response.ProjectResponse;
+import com.taskmanager.taskmanager.enums.Status;
+import com.taskmanager.taskmanager.service.ProjectService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,21 +18,16 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import patika.defineX.dto.request.ProjectRequest;
-import patika.defineX.dto.response.ProjectResponse;
-import patika.defineX.dto.response.TeamMemberResponse;
-import patika.defineX.model.enums.ProjectStatus;
-import patika.defineX.service.ProjectService;
-import patika.defineX.service.TeamMemberService;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
 import static org.hamcrest.Matchers.hasSize;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(MockitoExtension.class)
 class ProjectControllerTest {
@@ -36,14 +36,12 @@ class ProjectControllerTest {
 
     @Mock
     private ProjectService projectService;
-    @Mock
-    private TeamMemberService teamMemberService;
 
     @InjectMocks
     private ProjectController projectController;
 
     private UUID projectId;
-    private UUID departmentId;
+    private UUID proprietaireId;
     private ProjectRequest projectRequest;
     private ProjectResponse projectResponse;
 
@@ -52,57 +50,54 @@ class ProjectControllerTest {
     @BeforeEach
     void setUp() {
         mockMvc = MockMvcBuilders.standaloneSetup(projectController)
-                        .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
-                        .build();
+                .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
+                .build();
 
         projectId = UUID.randomUUID();
-        departmentId = UUID.randomUUID();
+        proprietaireId = UUID.randomUUID();
 
-        projectRequest = new ProjectRequest(departmentId, "New Project", "Test Description", ProjectStatus.IN_PROGRESS);
-        projectResponse = new ProjectResponse(projectId, "New Project", "Test Description", "IT", "ACTIVE");
+        projectRequest = new ProjectRequest(
+                proprietaireId,
+                "New Project",
+                "Test Description",
+                Status.IN_PROGRESS,
+                LocalDateTime.now()
+        );
+
+        projectResponse = new ProjectResponse(
+                projectId,
+                "New Project",
+                "Test Description",
+                "IT",
+                "ACTIVE"
+        );
     }
 
     @Test
-    void testListAllByDepartmentId_ShouldReturnProjectList() throws Exception {
-
+    void testListAllByProprietaireId_ShouldReturnProjectList() throws Exception {
         Pageable pageable = PageRequest.of(0, 10, Sort.by("createdAt").descending());
         Page<ProjectResponse> projectPage = new PageImpl<>(List.of(projectResponse), pageable, 1);
 
+        when(projectService.listAllByProprietaireId(proprietaireId, pageable)).thenReturn(projectPage);
 
-        when(projectService.listAllByDepartmentId(departmentId, pageable)).thenReturn(projectPage);
-
-        mockMvc.perform(get("/api/projects/v1/list/{departmentId}", departmentId)
+        mockMvc.perform(get("/api/projets/v1/list/{proprietaireId}", proprietaireId)
                         .contentType(MediaType.APPLICATION_JSON)
-                    .param("page", "0")
-                    .param("size", "10")
-                    .param("sort", "createdAt,desc"))
+                        .param("page", "0")
+                        .param("size", "10")
+                        .param("sort", "createdAt,desc"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content", hasSize(1)))
                 .andExpect(jsonPath("$.content[0].id").value(projectResponse.id().toString()));
     }
 
     @Test
-    void getMembersByProject_ShouldReturnTeamMemberList() throws Exception {
-        UUID teamMemberId = UUID.randomUUID();
-        TeamMemberResponse teamMemberResponse = new TeamMemberResponse(teamMemberId, UUID.randomUUID(),UUID.randomUUID());
-
-        when(teamMemberService.getAllMembersByProjectId(projectId)).thenReturn(List.of(teamMemberResponse));
-
-        mockMvc.perform(get("/api/projects/all-members/{id}", projectId)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.size()").value(1))
-                .andExpect(jsonPath("$[0].id").value(teamMemberId.toString()));
-    }
-
-    @Test
     void testFindById_ShouldReturnProject() throws Exception {
         when(projectService.getById(projectId)).thenReturn(projectResponse);
 
-        mockMvc.perform(get("/api/projects/v1/{id}", projectId)
+        mockMvc.perform(get("/api/projets/v1/{id}", projectId)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.title").value("New Project"));
+                .andExpect(jsonPath("$.nom").value("New Project"));
     }
 
     @Test
@@ -110,11 +105,11 @@ class ProjectControllerTest {
     void testSave_WithProjectManager_ShouldCreateProject() throws Exception {
         when(projectService.save(any(ProjectRequest.class))).thenReturn(projectResponse);
 
-        mockMvc.perform(post("/api/projects/v1")
+        mockMvc.perform(post("/api/projets/v1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(projectRequest)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.title").value("New Project"));
+                .andExpect(jsonPath("$.nom").value("New Project"));
     }
 
     @Test
@@ -122,11 +117,11 @@ class ProjectControllerTest {
     void testUpdate_WithProjectManager_ShouldUpdateProject() throws Exception {
         when(projectService.update(eq(projectId), any(ProjectRequest.class))).thenReturn(projectResponse);
 
-        mockMvc.perform(put("/api/projects/v1/{id}", projectId)
+        mockMvc.perform(put("/api/projets/v1/{id}", projectId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(projectRequest)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.title").value("New Project"));
+                .andExpect(jsonPath("$.nom").value("New Project"));
     }
 
     @Test
@@ -134,11 +129,11 @@ class ProjectControllerTest {
     void testUpdateStatus_WithProjectManager_ShouldUpdateProjectStatus() throws Exception {
         when(projectService.updateStatus(projectId, "COMPLETED")).thenReturn(projectResponse);
 
-        mockMvc.perform(patch("/api/projects/v1/{id}", projectId)
+        mockMvc.perform(patch("/api/projets/v1/{id}", projectId)
                         .param("status", "COMPLETED")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.title").value("New Project"));
+                .andExpect(jsonPath("$.nom").value("New Project"));
     }
 
     @Test
@@ -146,9 +141,8 @@ class ProjectControllerTest {
     void testDelete_WithProjectManager_ShouldDeleteProject() throws Exception {
         doNothing().when(projectService).delete(projectId);
 
-        mockMvc.perform(delete("/api/projects/v1/{id}", projectId)
+        mockMvc.perform(delete("/api/projets/v1/{id}", projectId)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
     }
-
 }

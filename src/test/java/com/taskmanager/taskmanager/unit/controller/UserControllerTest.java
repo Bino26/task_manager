@@ -1,6 +1,11 @@
 package com.taskmanager.taskmanager.unit.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.taskmanager.taskmanager.controller.UserController;
+import com.taskmanager.taskmanager.dto.request.UserRequest;
+import com.taskmanager.taskmanager.dto.response.UserResponse;
+import com.taskmanager.taskmanager.enums.Role;
+import com.taskmanager.taskmanager.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,10 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import patika.defineX.dto.request.UserRequest;
-import patika.defineX.dto.response.UserResponse;
-import patika.defineX.model.enums.Role;
-import patika.defineX.service.UserService;
+
 
 import java.util.Arrays;
 import java.util.List;
@@ -53,7 +55,7 @@ class UserControllerTest {
     void testListUsers() throws Exception {
         when(userService.listAll()).thenReturn(Arrays.asList(userResponse, updatedUserResponse));
 
-        mockMvc.perform(get("/api/user/v1"))
+        mockMvc.perform(get("/api/utilisateurs/v1"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$[0].name").value("User One"))
@@ -68,7 +70,7 @@ class UserControllerTest {
 
         when(userService.getById(userId)).thenReturn(userResponse);
 
-        mockMvc.perform(get("/api/user/v1/{id}", userId))
+        mockMvc.perform(get("/api/utilisateurs/v1/{id}", userId))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.name").value("User One"))
@@ -84,7 +86,7 @@ class UserControllerTest {
 
         when(userService.update(userId, userRequest)).thenReturn(updatedUserResponse);
 
-        mockMvc.perform(put("/api/user/v1/{id}", userId)
+        mockMvc.perform(put("/api/utilisateurs/v1/{id}", userId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(userRequest)))
                 .andExpect(status().isOk())
@@ -102,7 +104,7 @@ class UserControllerTest {
 
         when(userService.addRole(userId, role)).thenReturn(userResponse);
 
-        mockMvc.perform(patch("/api/user/v1/{id}/roles/add", userId)
+        mockMvc.perform(patch("/api/utilisateurs/v1/{id}/roles/add", userId)
                         .param("role", role.name()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("User One"))
@@ -120,7 +122,7 @@ class UserControllerTest {
 
         when(userService.removeRole(userId, role)).thenReturn(userResponse);
 
-        mockMvc.perform(patch("/api/user/v1/{id}/roles/remove", userId)
+        mockMvc.perform(patch("/api/utilisateurs/v1/{id}/roles/remove", userId)
                         .param("role", role.name()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("User One"))
@@ -135,7 +137,7 @@ class UserControllerTest {
 
         doNothing().when(userService).delete(userId);
 
-        mockMvc.perform(delete("/api/user/v1/{id}", userId))
+        mockMvc.perform(delete("/api/utilisateurs/v1/{id}", userId))
                 .andExpect(status().isNoContent());
 
         verify(userService, times(1)).delete(userId);
