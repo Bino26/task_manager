@@ -108,4 +108,10 @@ public class GeneralExceptionAdvice extends ResponseEntityExceptionHandler {
                 HttpStatus.FORBIDDEN
         );
     }
+
+    @ExceptionHandler(OverdueTaskNotFoundException.class)
+    public ResponseEntity<String> handleOverdueTaskNotFound(OverdueTaskNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    }
+
 }
