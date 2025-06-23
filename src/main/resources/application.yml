@@ -1,0 +1,26 @@
+spring:
+  application:
+    name: task-manager
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
+  datasource:
+    url: jdbc:postgresql://localhost:5432/taskmanager
+    username: postgres
+    password: root
+  cache:
+    type: redis
+    redis:
+      cache-null-values: true
+      time-to-live: 600000  # 10 minutes (10 * 60 * 1000)
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+jwt:
+  secret-key: mYiADZOy9Hq5pTfomhj9hPUJLGAN/ZB6AZ4yoHfCtN0f8DaNQr6+4qeaJ9YfMK4ZbX85J3ao6TotW+jrLKLGeafpaYYLn2mmrYOB/1mJzhQYEaf883PtWAIwnTwHpPuEsJAhyHwEtlTvy++pZA+0bns66RUDBk80bJUA4JhJUI8
+  access-expiration-time: 3600000  # 1 hour (60 * 60 * 1000)
+  refresh-expiration-time: 604800000  # 7 day (7 * 24 * 60 * 60 * 1000)
