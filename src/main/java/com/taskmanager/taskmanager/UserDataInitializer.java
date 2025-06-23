@@ -29,7 +29,7 @@ public class UserDataInitializer implements CommandLineRunner {
             User user = User.builder()
                     .nomUtilisateur("Admin")
                     .email("admin@task.com")
-                    .password(passwordEncoder.encode("password"))
+                    .password(passwordEncoder.encode("password1234"))
                     .role(Collections.singleton(Role.PROJECT_MANAGER))
                     .build();
 
