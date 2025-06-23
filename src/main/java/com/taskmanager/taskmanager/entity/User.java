@@ -1,6 +1,7 @@
 package com.taskmanager.taskmanager.entity;
 
-import com.taskmanager.taskmanager.entity.enums.Role;
+import com.taskmanager.taskmanager.enums.Role;
+import com.taskmanager.taskmanager.enums.UserStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -19,10 +20,16 @@ import java.util.Set;
 public class User extends BaseEntity {
 
     @Column(nullable = false)
-    private String name;
+    private String nomUtilisateur;
 
     @Column(nullable = false)
     private String email;
+
+    @Builder.Default
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private UserStatus statut = UserStatus.ACTIF;
+
 
     @Column(nullable = false)
     private String password;
@@ -31,5 +38,7 @@ public class User extends BaseEntity {
     @JoinTable(name = "authorities", joinColumns = @JoinColumn(name = "user_id"))
     @Column(name = "role", nullable = false)
     @Enumerated(EnumType.STRING)
-    private Set<Role> authorities;
+    private Set<Role> role;
+
+
 }

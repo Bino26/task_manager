@@ -22,7 +22,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         User user = userService.findByEmail(email);
 
-        var roles = user.getAuthorities().stream()
+        var roles = user.getRole().stream()
                 .map(role -> new SimpleGrantedAuthority(role.getAuthority()))
                 .toList();
 

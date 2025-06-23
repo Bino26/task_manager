@@ -3,7 +3,7 @@ package com.taskmanager.taskmanager.dto.response;
 
 
 import com.taskmanager.taskmanager.entity.User;
-import com.taskmanager.taskmanager.entity.enums.Role;
+import com.taskmanager.taskmanager.enums.Role;
 
 import java.util.List;
 import java.util.UUID;
@@ -17,9 +17,9 @@ public record UserResponse(
     public static UserResponse from(User user) {
         return new UserResponse(
                 user.getId(),
-                user.getName(),
+                user.getNomUtilisateur(),
                 user.getEmail(),
-                user.getAuthorities().stream()
+                user.getRole().stream()
                         .map(Role::getDisplayName)
                         .toList()
         );

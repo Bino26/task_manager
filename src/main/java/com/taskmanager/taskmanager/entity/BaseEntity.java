@@ -25,7 +25,7 @@ public abstract class BaseEntity {
     private LocalDateTime deletedAt = null;
 
     @CreationTimestamp
-    private LocalDateTime createdAt;
+    private LocalDateTime dateCreation;
 
     @UpdateTimestamp
     private LocalDateTime updatedAt;

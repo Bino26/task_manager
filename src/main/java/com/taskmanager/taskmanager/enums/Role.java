@@ -1,4 +1,4 @@
-package com.taskmanager.taskmanager.entity.enums;
+package com.taskmanager.taskmanager.enums;
 
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;

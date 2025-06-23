@@ -3,7 +3,7 @@ package com.taskmanager.taskmanager.service;
 import com.taskmanager.taskmanager.dto.request.UserRequest;
 import com.taskmanager.taskmanager.dto.response.UserResponse;
 import com.taskmanager.taskmanager.entity.User;
-import com.taskmanager.taskmanager.entity.enums.Role;
+import com.taskmanager.taskmanager.enums.Role;
 import com.taskmanager.taskmanager.exception.custom.CustomAccessDeniedException;
 import com.taskmanager.taskmanager.exception.custom.CustomAlreadyExistException;
 import com.taskmanager.taskmanager.exception.custom.CustomNotFoundException;
@@ -52,7 +52,7 @@ public class UserService {
     public UserResponse save(User user) {
         logger.info("Saving user with email: {}", user.getEmail());
         existsByEmail(user.getEmail());
-        user.setAuthorities(Set.of(Role.TEAM_MEMBER));
+        user.setRole(Set.of(Role.TEAM_MEMBER));
         User savedUser = userRepository.save(user);
         logger.info("User saved with id: {}", savedUser.getId());
         return UserResponse.from(savedUser);
@@ -71,7 +71,7 @@ public class UserService {
             existsByEmail(userRequest.email());
         }
 
-        user.setName(userRequest.name());
+        user.setNomUtilisateur(userRequest.name());
         user.setEmail(userRequest.email());
         user.setPassword(userRequest.password());
         User updatedUser = userRepository.save(user);
@@ -82,11 +82,11 @@ public class UserService {
     public UserResponse addRole(UUID id, Role role) {
         logger.info("Adding role {} to user with id: {}", role, id);
         User user = findById(id);
-        if (user.getAuthorities().contains(role)) {
+        if (user.getRole().contains(role)) {
             logger.info("User already has role: {}", role);
             return UserResponse.from(user);
         }
-        user.getAuthorities().add(role);
+        user.getRole().add(role);
         User updatedUser = userRepository.save(user);
         logger.info("Role {} added to user with id: {}", role, updatedUser.getId());
         return UserResponse.from(updatedUser);
@@ -95,7 +95,7 @@ public class UserService {
     public UserResponse removeRole(UUID id, Role role) {
         logger.info("Removing role {} from user with id: {}", role, id);
         User user = findById(id);
-        if (!user.getAuthorities().contains(role)) {
+        if (!user.getRole().contains(role)) {
             logger.warn("User does not have role: {}", role);
             throw new CustomNotFoundException("User does not have role: " + role);
         }
@@ -104,7 +104,7 @@ public class UserService {
             return UserResponse.from(user);
         }
 
-        user.getAuthorities().remove(role);
+        user.getRole().remove(role);
         User updatedUser = userRepository.save(user);
         logger.info("Role {} removed from user with id: {}", role, updatedUser.getId());
         return UserResponse.from(updatedUser);

@@ -1,15 +1,13 @@
-package com.taskmanager.taskmanager.entity.enums;
+package com.taskmanager.taskmanager.enums;
 
 import lombok.Getter;
 
 @Getter
 public enum PriorityLevel {
-    URGENT("Urgent"),
-    CRITICAL("Critical"),
-    HIGH("High"),
-    MEDIUM("Medium"),
-    LOW("Low"),
-    LOWEST("Lowest");
+    CRITICAL("CRITIQUE"),
+    HIGH("HAUT"),
+    MEDIUM("MOYEN"),
+    LOW("BAS");
 
     private final String displayName;
 
