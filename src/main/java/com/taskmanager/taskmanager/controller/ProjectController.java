@@ -2,6 +2,7 @@ package com.taskmanager.taskmanager.controller;
 
 import com.taskmanager.taskmanager.dto.request.ProjectRequest;
 import com.taskmanager.taskmanager.dto.response.ProjectResponse;
+import com.taskmanager.taskmanager.enums.Status;
 import com.taskmanager.taskmanager.service.ProjectService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -95,5 +96,19 @@ public class ProjectController {
     public ResponseEntity<Void> delete(@PathVariable UUID id) {
         projectService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @Operation(
+            method = "GET",
+            summary = "List  projects per statut",
+            description = "List  projects per statut"
+    )
+    @PreAuthorize("hasAuthority('PROJECT_MANAGER')")
+    @GetMapping
+    public ResponseEntity<Page<ProjectResponse>> listProjects(
+            @RequestParam(required = false) Status statut,
+            Pageable pageable
+    ) {
+        return ResponseEntity.ok(projectService.listProjects(statut, pageable));
     }
 }

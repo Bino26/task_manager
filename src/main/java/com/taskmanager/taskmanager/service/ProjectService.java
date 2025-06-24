@@ -146,4 +146,14 @@ public class ProjectService {
             throw new CustomAlreadyExistException("Project already exists with name: " + name);
         }
     }
+
+
+    @Cacheable(value = "projects", key = "#statut != null ? #statut.name() : 'all'")
+    public Page<ProjectResponse> listProjects(Status statut, Pageable pageable) {
+        Page<Project> projects = (statut != null)
+                ? projectRepository.findByStatutAndDeletedAtNull(statut, pageable)
+                : projectRepository.findAllByDeletedAtNull(pageable);
+
+        return projects.map(ProjectResponse::from);
+    }
 }
