@@ -88,7 +88,7 @@ class ProjectServiceTest {
         ProjectResponse response = projectService.save(projectRequest);
 
         assertNotNull(response);
-        assertEquals("TEST PROJECT", response.nom());
+        assertEquals("TEST PROJECT", response.getNom());
         verify(projectRepository, times(1)).save(any(Project.class));
     }
 
@@ -108,7 +108,7 @@ class ProjectServiceTest {
         ProjectResponse response = projectService.getById(projectId);
 
         assertNotNull(response);
-        assertEquals(projectId, response.id());
+        assertEquals(projectId, response.getId());
     }
 
     @Test
@@ -132,7 +132,7 @@ class ProjectServiceTest {
 
         assertNotNull(result);
         assertEquals(1, result.getTotalElements());
-        assertEquals("TEST PROJECT", result.getContent().get(0).nom());
+        assertEquals("TEST PROJECT", result.getContent().get(0).getNom());
     }
 
     @Test
@@ -145,7 +145,7 @@ class ProjectServiceTest {
         ProjectResponse response = projectService.update(projectId, projectRequest);
 
         assertNotNull(response);
-        assertEquals("TEST PROJECT", response.nom());
+        assertEquals("TEST PROJECT", response.getNom());
     }
 
     @Test
@@ -164,7 +164,7 @@ class ProjectServiceTest {
 
         ProjectResponse response = projectService.updateStatus(projectId, "COMPLETED");
 
-        assertEquals(Status.COMPLETED.getDisplayName(), response.status());
+        assertEquals(Status.COMPLETED.getDisplayName(), response.getStatus());
     }
 
     @Test
@@ -201,7 +201,7 @@ class ProjectServiceTest {
         ProprietaireDeletedEvent event = new ProprietaireDeletedEvent(userId);
         when(projectRepository.findAllByProprietaireId_IdAndDeletedAtNull(userId)).thenReturn(List.of(project));
 
-        projectService.deleteAllByDepartmentId(event);
+        projectService.deleteAllByProprietaireId(event);
 
         verify(projectRepository).saveAll(anyList());
         verify(applicationEventPublisher).publishEvent(any(ProjectDeletedEvent.class));

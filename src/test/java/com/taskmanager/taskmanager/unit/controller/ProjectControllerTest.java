@@ -87,7 +87,7 @@ class ProjectControllerTest {
                         .param("sort", "createdAt,desc"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content", hasSize(1)))
-                .andExpect(jsonPath("$.content[0].id").value(projectResponse.id().toString()));
+                .andExpect(jsonPath("$.content[0].id").value(projectResponse.getId().toString()));
     }
 
     @Test

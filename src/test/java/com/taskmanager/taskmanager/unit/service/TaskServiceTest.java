@@ -59,7 +59,7 @@ class TaskServiceTest {
 
         // Assert
         assertEquals(1, result.getTotalElements());
-        assertEquals("Late Task", result.getContent().get(0).titre());
+        assertEquals("Late Task", result.getContent().get(0).getTitre());
         verify(taskRepository).findOverdueTasks(pageable);
     }
 

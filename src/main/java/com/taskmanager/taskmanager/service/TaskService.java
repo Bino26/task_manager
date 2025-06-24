@@ -42,8 +42,6 @@ public class TaskService {
     public Page<TaskResponse> listTasks(Status statut, UUID assigneId, PriorityLevel priorité, Pageable pageable) {
         log.info("Fetching tasks with filters - statut: {}, assigneId: {}, priorité: {}", statut, assigneId, priorité);
 
-        // Filtering logic — you might want to implement a Specification or QueryDSL for flexible queries.
-        // For simplicity, here is an example with all-null returning all tasks not deleted.
         if (statut != null && assigneId != null && priorité != null) {
             return taskRepository.findByStatutAndAssigneId_IdAndPrioritéAndDeletedAtNull(statut, assigneId, priorité, pageable)
                     .map(TaskResponse::from);
