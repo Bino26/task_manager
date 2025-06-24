@@ -35,10 +35,11 @@ $ docker-compose up
 'admin@task.com' and 'password1234' 
   for being able to access all endpoints
 ```
+- You can use a GUI tool like [RedisInsight](https://redis.io/download/) to view and manage your cached Redis data.
 
 ### Contribute
 Feel free to open a Pull Request or an issue !
 
 ### ⚠️ Warning
 Due to a missed deadline, **the Postman collection may be missing** or **incomplete**.
-Please use Swagger  to interact with the API.
+Please **Be Kind** and use Swagger Docs to interact with the API.
