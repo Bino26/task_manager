@@ -10,7 +10,7 @@
 
 ## About the Project
 
-This application is designed for  task management processes. Users can log in with different roles to create projects , assign tasks, and track progress. 
+This application is designed for  task management processes. Users can log in with different roles to create projects , assign tasks, and track progress.
 
 ## Technologies Used
 
@@ -34,7 +34,7 @@ This application is designed for  task management processes. Users can log in wi
 
 $ git clone https://github.com/Bino26/task_manager.git
 $ cd task_manager
-$ docker compose up --build
+$ make build
 ``` 
 
 - **You can reach the swagger-ui via**  `http://localhost:8080/swagger-ui/index.html`
@@ -48,8 +48,18 @@ $ docker compose up --build
 ```
 - You can use a GUI tool like [RedisInsight](https://redis.io/download/) to view and manage your cached Redis data.
 
-### Contribute
-Feel free to open a Pull Request or an issue !
+### Commands from Makefile 
+
+| Command         | Description                                 |
+|----------------|---------------------------------------------|
+| `make build`   | Build app image with `-DskipTests`          |
+| `make up`      | Start app and dependencies                  |
+| `make down`    | Stop and remove all running containers      |
+| `make logs`    | View live logs from containers              |
+| `make test`    | Run tests via `Dockerfile.test` + Testcontainers |
+| `make clean`   | Clean up all unused Docker resources        |
+
+
 
 ### 🙏 Kindly Note
 Due to time constraints, the Postman collection may be missing or incomplete.  
@@ -73,3 +83,6 @@ Instead, follow one of these best practices:
 - Use tools like [Docker secrets](https://docs.docker.com/engine/swarm/secrets/) or Spring Boot config servers to manage sensitive information securely.
 
 **🛡️ Keep credentials and sensitive values out of source control.**
+
+### Contribute
+Feel free to open a Pull Request or an issue !
