@@ -40,7 +40,10 @@ $ docker compose up --build
 - **You can reach the swagger-ui via**  `http://localhost:8080/swagger-ui/index.html`
 ```sh
   Login with :
-'admin@task.com' and 'password1234' 
+{
+  "email": "admin@task.com",
+  "password": "password1234"
+}
   for being able to access all endpoints
 ```
 - You can use a GUI tool like [RedisInsight](https://redis.io/download/) to view and manage your cached Redis data.
