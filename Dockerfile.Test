@@ -1,0 +1,12 @@
+# Dockerfile.test
+
+# Use Maven + JDK to run tests
+FROM maven:3.9.6-eclipse-temurin-17 AS test-runner
+
+WORKDIR /app
+
+COPY pom.xml .
+COPY src ./src
+
+# Run tests and output results
+RUN mvn clean test

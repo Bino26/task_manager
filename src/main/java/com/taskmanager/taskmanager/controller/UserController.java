@@ -37,9 +37,9 @@ public class UserController {
     }
 
     @Operation(
-            method = "POST",
-            summary = "Create a user",
-            description = "Create a user"
+            method = "GET",
+            summary = "Get a user",
+            description = "Get a user"
     )
     @GetMapping("/v1/{id}")
     public ResponseEntity<UserResponse> getUserById (@PathVariable UUID id) {

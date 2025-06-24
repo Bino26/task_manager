@@ -22,6 +22,7 @@ services:
   test-runner:
     build:
       context: .
+      dockerfile: Dockerfile.Test
     depends_on:
       - postgres
       - redis
@@ -29,7 +30,6 @@ services:
       SPRING_PROFILES_ACTIVE: test
     networks:
       - testnet
-    command: mvn test
 
 networks:
   testnet:

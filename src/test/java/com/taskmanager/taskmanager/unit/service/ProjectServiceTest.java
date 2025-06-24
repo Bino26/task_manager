@@ -138,7 +138,7 @@ class ProjectServiceTest {
     @Test
     void update_ShouldUpdateProject() {
         when(projectRepository.findByIdAndDeletedAtNull(projectId)).thenReturn(Optional.of(project));
-        when(projectRepository.existsByNomAndDeletedAtNull("TEST PROJECT")).thenReturn(false);
+//        when(projectRepository.existsByNomAndDeletedAtNull("TEST PROJECT")).thenReturn(false);
         when(userService.findById(userId)).thenReturn(proprietaire);
         when(projectRepository.save(any(Project.class))).thenReturn(project);
 

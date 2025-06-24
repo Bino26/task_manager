@@ -15,10 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class UserService {
@@ -82,6 +79,9 @@ public class UserService {
     public UserResponse addRole(UUID id, Role role) {
         logger.info("Adding role {} to user with id: {}", role, id);
         User user = findById(id);
+        if (user.getRole() == null) {
+            user.setRole(new HashSet<>());
+        }
         if (user.getRole().contains(role)) {
             logger.info("User already has role: {}", role);
             return UserResponse.from(user);
