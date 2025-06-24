@@ -98,6 +98,11 @@ public class ProjectController {
         return ResponseEntity.noContent().build();
     }
 
+    @Operation(
+            method = "GET",
+            summary = "List  projects per statut",
+            description = "List  projects per statut"
+    )
     @PreAuthorize("hasAuthority('PROJECT_MANAGER')")
     @GetMapping
     public ResponseEntity<Page<ProjectResponse>> listProjects(
