@@ -66,8 +66,8 @@ class TaskControllerTest {
                         taskRequest.description(),
                         taskRequest.dateEcheance(),
                         5L,
-                Status.TO_DO,
-                taskRequest.priorité(),
+                Status.TO_DO.getDisplayName(),
+                PriorityLevel.MEDIUM.getDisplayName(),
                         taskRequest.projetId(),
                         taskRequest.assigneId()
                 );

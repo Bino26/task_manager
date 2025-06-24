@@ -25,7 +25,7 @@ This application is designed for  task management processes. Users can log in wi
 ```sh
 
 $ git clone https://github.com/Bino26/task_manager.git
-$ cd Task-Manager
+$ cd task_manager
 $ docker-compose up
 ``` 
 

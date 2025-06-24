@@ -38,12 +38,12 @@ public class ProjectService {
 
 
     @Cacheable(value = "projects")
-    public Page<ProjectResponse> listAllByProprietaireId(UUID departmentId, Pageable pageable) {
-        log.info("Fetching projects for department with id: {} from database", departmentId);
-        userService.findById(departmentId);
-        Page<ProjectResponse> projects = projectRepository.findAllWithPaginationByProprietaireId_IdAndDeletedAtNull(departmentId, pageable)
+    public Page<ProjectResponse> listAllByProprietaireId(UUID proprietaireId, Pageable pageable) {
+        log.info("Fetching projects for proprietaire with id: {} from database", proprietaireId);
+        userService.findById(proprietaireId);
+        Page<ProjectResponse> projects = projectRepository.findAllWithPaginationByProprietaireId_IdAndDeletedAtNull(proprietaireId, pageable)
                 .map(ProjectResponse::from);
-        log.info("{} projects found for department id: {}", projects.getTotalElements(), departmentId);
+        log.info("{} projects found for proprietaire id: {}", projects.getTotalElements(), proprietaireId);
         return projects;
     }
 
@@ -115,8 +115,8 @@ public class ProjectService {
     @CacheEvict(value = "projects", allEntries = true)
     @EventListener
     @Transactional
-    public void deleteAllByDepartmentId(ProprietaireDeletedEvent event) {
-        log.warn("Deleting all projects for department id: {}", event.proprietaireId());
+    public void deleteAllByProprietaireId(ProprietaireDeletedEvent event) {
+        log.warn("Deleting all projects for proprietaire id: {}", event.proprietaireId());
 
         List<Project> projects = projectRepository.findAllByProprietaireId_IdAndDeletedAtNull(event.proprietaireId());
 
@@ -127,7 +127,7 @@ public class ProjectService {
 
         projectRepository.saveAll(projects);
 
-        log.warn("{} projects deleted for department id: {}", projects.size(), event.proprietaireId());
+        log.warn("{} projects deleted for proprietaire id: {}", projects.size(), event.proprietaireId());
     }
 
     protected Project findById(UUID id) {
