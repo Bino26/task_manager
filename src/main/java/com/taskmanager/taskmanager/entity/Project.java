@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @Table(uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"title", "deleted_at"})
+        @UniqueConstraint(columnNames = {"nom", "deleted_at"})
 })
 public class Project extends BaseEntity {
 

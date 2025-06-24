@@ -1,61 +1,35 @@
-version: '3.8'
+version: "3.8"
 
 services:
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: testuser
+      POSTGRES_PASSWORD: testpass
+      POSTGRES_DB: testdb
+    ports:
+      - "5433:5432"
+    networks:
+      - testnet
+
   redis:
     image: redis:latest
-    container_name: redis
     ports:
-      - "6379:6379"
-    environment:
-      - ALLOW_EMPTY_PASSWORD=yes
+      - "6380:6379"
     networks:
-      - shared-network
-    healthcheck:
-      test: [ "CMD", "redis-cli", "ping" ]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+      - testnet
 
-
-  postgres:
-    image: postgres:latest
-    restart: always
-    container_name: postgres
-    ports:
-      - "5432:5432"
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: root
-      POSTGRES_DB: taskmanager
-    networks:
-      - shared-network
-    healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U taskmanager -d taskmanager_demo" ]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-
-  app:
-    build: .
-    ports:
-      - "8080:8080"
-    environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/taskmanager
-      - SPRING_DATASOURCE_USERNAME=postgres
-      - SPRING_DATASOURCE_PASSWORD=root
-      - SPRING_PROFILES_ACTIVE=docker
+  test-runner:
+    build:
+      context: .
     depends_on:
       - postgres
+      - redis
+    environment:
+      SPRING_PROFILES_ACTIVE: test
     networks:
-      - shared-network
-    restart: "no"
-    healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:8080/api/actuator/health" ]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 60s
+      - testnet
+    command: mvn test
 
 networks:
-  shared-network:
-    driver: bridge
+  testnet:
