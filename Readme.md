@@ -26,7 +26,7 @@ This application is designed for  task management processes. Users can log in wi
 
 $ git clone https://github.com/Bino26/task_manager.git
 $ cd task_manager
-$ docker-compose up
+$ docker compose up --build
 ``` 
 
 - **You can reach the swagger-ui via**  `http://localhost:8080/swagger-ui/index.html`

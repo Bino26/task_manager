@@ -156,4 +156,13 @@ public class ProjectService {
 
         return projects.map(ProjectResponse::from);
     }
+
+    @CacheEvict(value = "projects", allEntries = true)
+    @Transactional
+    public ProjectResponse updateProjectStatus(UUID id, Status statut) {
+        Project project = findById(id);
+        project.setStatut(statut);
+        Project updated = projectRepository.save(project);
+        return ProjectResponse.from(updated);
+    }
 }

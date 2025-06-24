@@ -111,4 +111,18 @@ public class ProjectController {
     ) {
         return ResponseEntity.ok(projectService.listProjects(statut, pageable));
     }
+
+    @Operation(
+            method = "PUT",
+            summary = "Update  project statut",
+            description = "Update  project statut"
+    )
+    @PreAuthorize("hasAuthority('PROJECT_MANAGER')")
+    @PutMapping("/v1/{id}/statut")
+    public ResponseEntity<ProjectResponse> updateStatus(
+            @PathVariable UUID id,
+            @RequestParam Status statut
+    ) {
+        return ResponseEntity.ok(projectService.updateProjectStatus(id, statut));
+    }
 }
